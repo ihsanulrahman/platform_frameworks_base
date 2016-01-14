@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import static android.app.StatusBarManager.SESSION_KEYGUARD;
 
 import android.annotation.IntDef;
+import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.biometrics.BiometricFaceConstants;
 import android.hardware.biometrics.BiometricFingerprintConstants;
@@ -28,6 +29,8 @@ import android.metrics.LogMaker;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Trace;
+import android.os.UserHandle;
+import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
@@ -185,6 +188,8 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
     private final boolean mOrderUnlockAndWake;
     private final Lazy<SelectedUserInteractor> mSelectedUserInteractor;
     private final KeyguardTransitionInteractor mKeyguardTransitionInteractor;
+    private final Context mContext;
+
     private long mLastFpFailureUptimeMillis;
     private int mNumConsecutiveFpFailures;
 
@@ -294,7 +299,8 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
             Lazy<SelectedUserInteractor> selectedUserInteractor,
             BiometricUnlockInteractor biometricUnlockInteractor,
             JavaAdapter javaAdapter,
-            KeyguardTransitionInteractor keyguardTransitionInteractor
+            KeyguardTransitionInteractor keyguardTransitionInteractor,
+            Context context
     ) {
         mPowerManager = powerManager;
         mUpdateMonitor = keyguardUpdateMonitor;
@@ -329,6 +335,8 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
         javaAdapter.alwaysCollectFlow(
                 keyguardTransitionInteractor.getStartedKeyguardTransitionStep(),
                 this::consumeTransitionStepOnStartedKeyguardState);
+        mContext = context;
+
         dumpManager.registerDumpable(this);
     }
 
