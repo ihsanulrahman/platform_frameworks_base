@@ -282,6 +282,7 @@ public class SecureSettings {
         Settings.Secure.ON_DEVICE_INTELLIGENCE_IDLE_TIMEOUT_MS,
         Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
         Settings.Secure.QUICK_SETTINGS_TILES_ANIM_STYLE,
-        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_DURATION
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_DURATION,
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_INTERPOLATOR
     };
 }
