@@ -36,14 +36,17 @@ import android.annotation.MainThread;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.ActivityOptions;
+import android.app.ActivityTaskManager;
 import android.app.ExitTransitionCoordinator;
 import android.app.ICompatCameraControlCallback;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
@@ -55,6 +58,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -90,6 +94,8 @@ import com.android.systemui.res.R;
 import com.android.systemui.screenshot.TakeScreenshotService.RequestCallback;
 import com.android.systemui.screenshot.scroll.ScrollCaptureController;
 import com.android.systemui.screenshot.scroll.ScrollCaptureExecutor;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.systemui.util.Assert;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -267,6 +273,36 @@ public class ScreenshotController implements ScreenshotHandler {
                     | ActivityInfo.CONFIG_SCREEN_LAYOUT
                     | ActivityInfo.CONFIG_ASSETS_PATHS);
 
+    private ComponentName mTaskComponentName;
+    private PackageManager mPm;
+
+    private final TaskStackChangeListener mTaskListener = new TaskStackChangeListener() {
+        @Override
+        public void onTaskStackChanged() {
+            mBgExecutor.execute(() -> updateForegroundTaskSync());
+        }
+    };
+
+    private void updateForegroundTaskSync() {
+        try {
+            final ActivityTaskManager.RootTaskInfo focusedStack =
+                    ActivityTaskManager.getService().getFocusedRootTaskInfo();
+            if (focusedStack != null && focusedStack.topActivity != null) {
+                mTaskComponentName = focusedStack.topActivity;
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to get foreground task component", e);
+        }
+    }
+
+    private String getForegroundAppLabel() {
+        try {
+            final ActivityInfo ai = mPm.getActivityInfo(mTaskComponentName, 0);
+            return ai.applicationInfo.loadLabel(mPm).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+             return null;
+        }
+    }
 
     @AssistedInject
     ScreenshotController(
@@ -375,6 +411,15 @@ public class ScreenshotController implements ScreenshotHandler {
                         ClipboardOverlayController.COPY_OVERLAY_ACTION), null, null,
                 Context.RECEIVER_NOT_EXPORTED, ClipboardOverlayController.SELF_PERMISSION);
         mShowUIOnExternalDisplay = showUIOnExternalDisplay;
+
+        // Grab PackageManager
+        mPm = mContext.getPackageManager();
+
+        // Register task stack listener
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskListener);
+
+        // Initialize current foreground package name
+        updateForegroundTaskSync();
     }
 
     @Override
@@ -562,6 +607,7 @@ public class ScreenshotController implements ScreenshotHandler {
         removeWindow();
         releaseMediaPlayer();
         releaseContext();
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskListener);
         mBgExecutor.shutdown();
     }
 
@@ -902,7 +948,7 @@ public class ScreenshotController implements ScreenshotHandler {
             ScreenshotData screenshot, UUID requestId, Consumer<Uri> finisher) {
         ListenableFuture<ImageExporter.Result> future = mImageExporter.export(mBgExecutor,
                 requestId, screenshot.getBitmap(), screenshot.getUserOrDefault(),
-                mDisplay.getDisplayId());
+                mDisplay.getDisplayId(), getForegroundAppLabel());
         future.addListener(() -> {
             try {
                 ImageExporter.Result result = future.get();
@@ -953,7 +999,7 @@ public class ScreenshotController implements ScreenshotHandler {
         mSaveInBgTask = new SaveImageInBackgroundTask(mContext, mFlags, mImageExporter,
                 mScreenshotSmartActions, data,
                 mScreenshotNotificationSmartActionsProvider);
-        mSaveInBgTask.execute();
+        mSaveInBgTask.execute(getForegroundAppLabel());
     }
 
 
