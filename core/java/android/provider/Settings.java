@@ -7240,6 +7240,12 @@ public final class Settings {
         public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
 
         /**
+         * Whether StatusBar icons should use app icon
+         * @hide
+         */
+        public static final String STATUSBAR_COLORED_ICONS = "statusbar_colored_icons";
+
+        /**
          * Which Vibration Pattern to use
          * 0: dzzz-dzzz
          * 1: dzzz-da
