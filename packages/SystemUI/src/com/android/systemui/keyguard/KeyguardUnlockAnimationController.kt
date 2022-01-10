@@ -21,12 +21,15 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.app.WallpaperManager
 import android.content.res.Resources
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.os.DeadObjectException
 import android.os.Handler
 import android.os.PowerManager
 import android.os.RemoteException
+import android.os.UserHandle
+import android.provider.Settings
 import android.util.Log
 import android.view.RemoteAnimationTarget
 import android.view.SurfaceControl
@@ -147,6 +150,7 @@ const val SURFACE_BEHIND_FADE_OUT_START_DELAY_MS = 0L
  */
 @SysUISingleton
 class KeyguardUnlockAnimationController @Inject constructor(
+        private val context: Context,
         private val windowManager: WindowManager,
         @Main private val resources: Resources,
         private val keyguardStateController: KeyguardStateController,
@@ -333,6 +337,10 @@ class KeyguardUnlockAnimationController @Inject constructor(
 
     private val tmpFloat = FloatArray(9)
 
+    private val isRippleEnabled: Boolean
+        get() = Settings.System.getIntForUser(context.contentResolver,
+            Settings.System.AUTH_RIPPLE_ENABLED, 1, UserHandle.USER_CURRENT) == 1
+
     init {
         with(surfaceBehindAlphaAnimator) {
             duration = surfaceBehindFadeOutDurationMs()
@@ -427,7 +435,8 @@ class KeyguardUnlockAnimationController @Inject constructor(
                 // If the launcher is underneath, but we're about to launch an activity, don't do
                 // the animations since they won't be visible.
                 !notificationShadeWindowController.isLaunchingActivity &&
-                launcherUnlockController != null
+                launcherUnlockController != null &&
+                !(biometricUnlockControllerLazy.get().isWakeAndUnlock && !isRippleEnabled)
     }
 
     /**
