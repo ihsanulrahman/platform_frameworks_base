@@ -65,4 +65,8 @@
     <!-- LiveDisplay manager permission -->
     <string name="permlab_manageLiveDisplay">manage LiveDisplay settings</string>
     <string name="permdesc_manageLiveDisplay">Allows an app to configure advanced display settings.</string>
+
+    <!-- Parallel space badge -->
+    <string name="parallel_space_badge_label">%1$s</string>
+
 </resources>

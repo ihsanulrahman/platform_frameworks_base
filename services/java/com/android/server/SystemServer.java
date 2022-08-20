@@ -292,6 +292,7 @@ import com.android.server.wm.WindowManagerService;
 import com.android.server.bliss.LineageGlobalActionsService;
 import com.android.server.bliss.health.HealthInterfaceService;
 import com.android.server.bliss.display.LiveDisplayService;
+import com.android.server.bliss.ParallelSpaceManagerService;
 
 import dalvik.system.VMRuntime;
 
@@ -376,6 +377,9 @@ public final class SystemServer implements Dumpable {
             "com.android.server.media.MediaCommunicationService";
     private static final String HEALTHCONNECT_MANAGER_SERVICE_CLASS =
             "com.android.server.healthconnect.HealthConnectManagerService";
+    private static final String PARALLEL_SPACE_SERVICE_CLASS =
+            "com.android.server.bliss.ParallelSpaceManagerService";
+
     private static final String ROLE_SERVICE_CLASS = "com.android.role.RoleService";
     private static final String ENHANCED_CONFIRMATION_SERVICE_CLASS =
             "com.android.ecm.EnhancedConfirmationService";
@@ -3041,6 +3045,10 @@ public final class SystemServer implements Dumpable {
 
         t.traceBegin("HealthConnectManagerService");
         mSystemServiceManager.startService(HEALTHCONNECT_MANAGER_SERVICE_CLASS);
+        t.traceEnd();
+
+        t.traceBegin("StartParallelSpaceManagerService");
+        mSystemServiceManager.startService(PARALLEL_SPACE_SERVICE_CLASS);
         t.traceEnd();
 
         if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_DEVICE_LOCK)) {

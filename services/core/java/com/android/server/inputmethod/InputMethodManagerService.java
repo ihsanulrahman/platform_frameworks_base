@@ -186,6 +186,7 @@ import com.android.server.pm.UserManagerInternal;
 import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.utils.PriorityDump;
 import com.android.server.wm.WindowManagerInternal;
+import com.android.server.bliss.ParallelSpaceManagerService;
 
 import com.android.internal.bliss.hardware.LineageHardwareManager;
 
@@ -3790,6 +3791,10 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
                         + "specified for cross-user startInputOrWindowGainedFocus()");
             }
         }
+
+        int uid = ParallelSpaceManagerService
+                .convertToParallelOwnerIfPossible(userId);
+
         if (windowToken == null) {
             Slog.e(TAG, "windowToken cannot be null.");
             return InputBindResult.NULL;
