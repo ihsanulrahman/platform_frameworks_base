@@ -273,7 +273,9 @@ public class IconManager implements DemoModeCommandReceiver {
     /** Called once an icon has been set. */
     public void onSetIcon(int viewIndex, StatusBarIcon icon) {
         StatusBarIconView view = (StatusBarIconView) mGroup.getChildAt(viewIndex);
-        view.set(icon);
+        if (view instanceof StatusBarIconView) {
+            ((StatusBarIconView) view).set(icon);
+        }
     }
 
     /** Called once an icon holder has been set. */
