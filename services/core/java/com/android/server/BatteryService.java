@@ -164,7 +164,7 @@ public final class BatteryService extends SystemService {
     private int mLastMaxChargingVoltage;
     private int mLastChargeCounter;
     private int mLastBatteryCycleCount;
-    private int mLastCharingState;
+    private int mLastChargingState;
     /**
      * The last seen charging policy. This requires the
      * {@link android.Manifest.permission#BATTERY_STATS} permission and should therefore not be
@@ -591,7 +591,7 @@ public final class BatteryService extends SystemService {
                         || mHealthInfo.batteryFullChargeDesignCapacityUah !=
                                 mLastBatteryFullChargeDesign
                         || mHealthInfo.batteryCycleCount != mLastBatteryCycleCount
-                        || mHealthInfo.chargingState != mLastCharingState
+                        || mHealthInfo.chargingState != mLastChargingState
                         || mOemCharger != mLastOemCharger)) {
 
             if (mPlugType != mLastPlugType) {
@@ -775,7 +775,7 @@ public final class BatteryService extends SystemService {
             mLastBatteryLevelCritical = mBatteryLevelCritical;
             mLastInvalidCharger = mInvalidCharger;
             mLastBatteryCycleCount = mHealthInfo.batteryCycleCount;
-            mLastCharingState = mHealthInfo.chargingState;
+            mLastChargingState = mHealthInfo.chargingState;
             mLastOemCharger = mOemCharger;
             mLastBatteryFullCharge = mHealthInfo.batteryFullChargeUah;
             mLastBatteryFullChargeDesign = mHealthInfo.batteryFullChargeDesignCapacityUah;
