@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.android.app.tracing.coroutines.launch
 import com.android.systemui.Dependency
+import com.android.systemui.biometrics.UdfpsIconDrawable
 import com.android.systemui.common.ui.view.LongPressHandlingView
 import com.android.systemui.deviceentry.shared.DeviceEntryUdfpsRefactor
 import com.android.systemui.keyguard.ui.view.DeviceEntryIconView
@@ -217,12 +218,12 @@ object DeviceEntryIconViewBinder {
                         }
                         fgIconView.imageTintList =
                             ColorStateList.valueOf(overrideColor?.toArgb() ?: viewModel.tint)
-                        if (!shouldUseCustomUdfpsIcon.value || !packageInstalled) {
+                        if (fgIconView.drawable.current !is UdfpsIconDrawable) {
                             fgIconView.setPadding(
                                 viewModel.padding,
                                 viewModel.padding,
                                 viewModel.padding,
-                                viewModel.padding,
+                                viewModel.padding
                             )
                         } else {
                             fgIconView.setPadding(0, 0, 0, 0)
