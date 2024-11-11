@@ -379,15 +379,10 @@ class AuthRippleController @Inject constructor(
                 if (keyguardUpdateMonitor.isFingerprintDetectionRunning) {
                     showDwellRipple()
                 }
-                if (udfpsController?.isAnimationEnabled() == false) {
-                    showDwellRipple()
-                }
             }
 
             override fun onFingerUp() {
-                if (udfpsController?.isAnimationEnabled() == false) {
-                    mView.retractDwellRipple()
-                }
+                mView.retractDwellRipple()
             }
         }
 

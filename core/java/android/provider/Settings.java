@@ -7314,11 +7314,6 @@ public final class Settings {
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
 
         /**
-         * @hide
-         */
-        public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
-
-        /**
          * Whether StatusBar icons should use app icon
          * @hide
          */
@@ -7433,11 +7428,6 @@ public final class Settings {
          * @hide
          */
         public static final String FORCE_FULLSCREEN_CUTOUT_APPS = "force_full_screen_cutout_apps";
-
-        /**
-         * @hide
-         */
-        public static final String UDFPS_ICON = "udfps_icon";
 
         /**
          * These are all public system settings
@@ -13690,13 +13680,6 @@ public final class Settings {
          * @hide
          */
         public static final String PULSE_SMOOTHING_ENABLED = "pulse_smoothing_enabled";
-
-        /**
-         * Enable udfps detection even when screen is off
-         * Default value is 0
-         * @hide
-         */
-        public static final String SCREEN_OFF_UDFPS_ENABLED = "screen_off_udfps_enabled";
 
         /**
          * Control whether to hide ADB and Developer settings enable status.
