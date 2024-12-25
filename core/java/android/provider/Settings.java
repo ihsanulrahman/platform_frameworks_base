@@ -7194,6 +7194,13 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_BATTERY_INFO = "lockscreen_battery_info";
 
+	/**
+         * Whether to control brightness from status bar
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
+
         /**
          * Whether to show or hide alert slider notifications on supported devices
          * @hide
@@ -7552,11 +7559,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(KEY_EDGE_LONG_SWIPE_ACTION);
             PRIVATE_SETTINGS.add(SWAP_VOLUME_KEYS_ON_ROTATION);
             PRIVATE_SETTINGS.add(AUTO_BRIGHTNESS_ONE_SHOT);
-<<<<<<< HEAD
-            PRIVATE_SETTINGS.add(NAVIGATION_BAR_IME_SPACE);
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
-=======
->>>>>>> parent of d1f0b0d39489 (base: Remove IME space under keyboard feature [1/2])
         }
 
         /**
